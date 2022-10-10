@@ -1,8 +1,7 @@
-import logo from './logo.svg';
 import './App.css';
 import ColorBox from './ColorBox'
 import Button from './Button'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 
 /// TODO - add TypeScript stuff
 
@@ -11,12 +10,11 @@ function App() {
   const [colorData, setColorData] = useState({})
   const [message, setMessage] = useState('')
   const [isError, setIsError] = useState(false)
+  const [correctCount, setCorrectCount] = useState(0)
+  const [wrongCount, setWrongCount] = useState(0)
+  const [colorsClicked, setColorsClicked] = useState([])
 
-  useEffect(() => {
-    setColorData(generateNewState())
-  }, [])
-
-  const generateNewState = () => {
+  const generateNewState = useCallback(() => {
     const options = [
       generateColorInHex(),
       generateColorInHex(),
@@ -27,11 +25,14 @@ function App() {
 
     return {
       color: options[mainColorIdx],
-      options1: options[0],
-      options2: options[1],
-      options3: options[2]
+      options
     }
-  }
+  }, [])
+
+  // initiate state
+  useEffect(() => {
+    setColorData(generateNewState())
+  }, [generateNewState])
 
   const generateColorInHex = () => {
     const red = (Math.floor(Math.random() * 256) % 256).toString(16)
@@ -42,15 +43,20 @@ function App() {
     return colorHex
   }
 
-  const onButtonClick = (e) => {
-    if (e.target.innerHTML === colorData.color) {
+  const onButtonClick = (color) => {
+    if (color === colorData.color) {
       setIsError(false)
-      setMessage('Correct')
+      setMessage('Correct!')
       setColorData(generateNewState())
-
+      setCorrectCount(prev => prev + 1)
+      setColorsClicked([])
     } else {
-      setMessage('Wrong answer')
+      setMessage('Wrong answer :(')
       setIsError(true)
+      if (!colorsClicked.includes(color)) {
+        setWrongCount(prev => prev + 1)
+        setColorsClicked([...colorsClicked, color])
+      }
     }
   }
 
@@ -61,13 +67,17 @@ function App() {
         <ColorBox color={colorData.color} />
       </section>
       <section className="buttons">
-        <Button color={colorData.options1} onClick={onButtonClick} />
-        <Button color={colorData.options2} onClick={onButtonClick} />
-        <Button color={colorData.options3} onClick={onButtonClick} />
+        {colorData?.options?.map((option) =>
+          <Button key={option} color={option} onClick={onButtonClick} />
+        )}
       </section>
       {isError
         ? <p className="error">{message}</p>
         : <p className="success">{message}</p>}
+      <section className="results">
+        <p className="correct">Correct answers: {correctCount}</p>
+        <p className="wrong">Wrong answers: {wrongCount}</p>
+      </section>
     </main>
   );
 }

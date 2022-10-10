@@ -46,3 +46,20 @@
   color: green;
   font-weight: 600;
 }
+
+.results {
+  align-self: flex-start;
+  text-align: left;
+}
+
+.results p {
+  margin: 0;
+}
+
+.results .correct {
+  color: green
+}
+
+.results .wrong {
+  color: red
+}

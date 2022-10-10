@@ -1,7 +1,7 @@
 
 const Button = ({ color, onClick }) => {
   return (
-    <button onClick={onClick}>{color}</button>
+    <button onClick={() => onClick(color)}>{color}</button>
   )
 }
 
