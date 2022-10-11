@@ -1,5 +1,8 @@
+type ColorBoxProps = {
+  color: string
+}
 
-const ColorBox = ({ color }) => {
+const ColorBox = ({ color }: ColorBoxProps) => {
   return (
     <div className="box" style={{ backgroundColor: color }} />
   )

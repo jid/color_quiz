@@ -3,18 +3,28 @@ import ColorBox from './ColorBox'
 import Button from './Button'
 import { useState, useEffect, useCallback } from 'react'
 
-/// TODO - add TypeScript stuff
+/// TODO - add more TypeScript stuff
+
+type ColorData = {
+  color: string,
+  options: string[]
+}
+
+const initialState: ColorData = {
+  color: '',
+  options: []
+}
 
 function App() {
   // {color: 'hex<1,2,3>', options: ['hex1', 'hex2', 'hex3]}
-  const [colorData, setColorData] = useState({})
-  const [message, setMessage] = useState('')
-  const [isError, setIsError] = useState(false)
-  const [correctCount, setCorrectCount] = useState(0)
-  const [wrongCount, setWrongCount] = useState(0)
-  const [colorsClicked, setColorsClicked] = useState([])
+  const [colorData, setColorData] = useState<ColorData>(initialState)
+  const [message, setMessage] = useState<string>('')
+  const [isError, setIsError] = useState<boolean>(false)
+  const [correctCount, setCorrectCount] = useState<number>(0)
+  const [wrongCount, setWrongCount] = useState<number>(0)
+  const [colorsClicked, setColorsClicked] = useState<string[]>([])
 
-  const generateNewState = useCallback(() => {
+  const generateNewState: (() => ColorData) = useCallback(() => {
     const options = [
       generateColorInHex(),
       generateColorInHex(),
@@ -34,16 +44,16 @@ function App() {
     setColorData(generateNewState())
   }, [generateNewState])
 
-  const generateColorInHex = () => {
-    const red = (Math.floor(Math.random() * 256) % 256).toString(16)
-    const green = (Math.floor(Math.random() * 256) % 256).toString(16)
-    const blue = (Math.floor(Math.random() * 256) % 256).toString(16)
-    const colorHex = `#${red}${green}${blue}`
+  const generateColorInHex: (() => string) = () => {
+    const red: string = (Math.floor(Math.random() * 256) % 256).toString(16)
+    const green: string = (Math.floor(Math.random() * 256) % 256).toString(16)
+    const blue: string = (Math.floor(Math.random() * 256) % 256).toString(16)
+    const colorHex: string = `#${red}${green}${blue}`
 
     return colorHex
   }
 
-  const onButtonClick = (color) => {
+  const onButtonClick: ((color: string) => void) = (color) => {
     if (color === colorData.color) {
       setIsError(false)
       setMessage('Correct!')
